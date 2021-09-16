@@ -31,10 +31,15 @@ app.layout = html.Div([
         #     className='four columns'
         # ),
         html.Div([
-            dcc.Graph(
-                # figure=powell_fig,
-                id='powell-levels',
-            ),
+            # dcc.Graph(
+            #     # figure=powell_fig,
+            #     id='powell-levels',
+            # ),
+            dcc.Loading(
+                id="loading-1",
+                type="default",
+                children=html.Div(dcc.Graph(id='powell-levels'))
+            )
         ],
             className='four columns'
         ),
@@ -106,11 +111,17 @@ def clean_powell_data(n):
 
     return powell_df.to_json()
 
-@app.callback([
-    Output('powell-levels', 'figure')],
-    [Input('powell-water-data', 'data')])
+# @app.callback(Output("loading-output-1", "children"), Input("powell-water-data", "data"))
+# def input_triggers_spinner(value):
+#     time.sleep(5)
+#     return value
+
+@app.callback(
+    Output('powell-levels', 'figure'),
+    Input('powell-water-data', 'data'))
 def lake_graphs(powell_data):
     powell_df = pd.read_json(powell_data)
+    time.sleep(5)
     return(print(powell_df))
 
 
