@@ -6,6 +6,7 @@ import requests
 import csv
 import pandas as pd
 import plotly.graph_objs as go
+from datetime import datetime, date, timedelta
 
 
 app = dash.Dash(__name__)
@@ -41,6 +42,15 @@ app.layout = html.Div([
         ],
             className='four columns'
         ),
+        html.Div([
+            dcc.Loading(
+                id="loading-combo",
+                type="default",
+                children=html.Div(dcc.Graph(id='combo-levels'))
+            )
+        ],
+            className='four columns'
+        ),
     ],
         className='row'
     ),
@@ -51,12 +61,14 @@ app.layout = html.Div([
     ),
     dcc.Store(id='powell-water-data'),
     dcc.Store(id='mead-water-data'),
+    dcc.Store(id='combo-water-data'),
 ])
 
 
 @app.callback([
     Output('powell-water-data', 'data'),
-    Output('mead-water-data', 'data')],
+    Output('mead-water-data', 'data'),
+    Output('combo-water-data', 'data')],
     #Output('combo-water-data', 'children'),
     #Output('blue-mesa-water-data', 'children'),
     #Output('navajo-water-data', 'children'),
@@ -115,9 +127,26 @@ def clean_powell_data(n):
     
     powell_df = df_powell_water.drop(df_powell_water.index[0])
     mead_df = df_mead_water.drop(df_mead_water.index[0])
-    print(mead_df)
 
-    return powell_df.to_json(), mead_df.to_json()
+    start_date = date(1963, 6, 29)
+    date_now = date.today()
+    delta = date_now - start_date
+    
+    days = delta.days
+    df_mead_water = mead_df[9527:]
+    
+    df_total = pd.merge(mead_df, powell_df, how='inner', left_index=True, right_index=True)
+  
+    df_total.rename(columns={'Date_x':'Date'}, inplace=True)
+    
+    df_total['Value_x'] = df_total['Value_x'].astype(int)
+    df_total['Value_y'] = df_total['Value_y'].astype(int)
+    df_total['Value'] = df_total['Value_x'] + df_total['Value_y']
+    
+    # combo_df = df_total.drop(df_total.index[0])
+    combo_df = df_total
+
+    return powell_df.to_json(), mead_df.to_json(), combo_df.to_json()
 
 # @app.callback(Output("loading-output-1", "children"), Input("powell-water-data", "data"))
 # def input_triggers_spinner(value):
@@ -126,15 +155,19 @@ def clean_powell_data(n):
 
 @app.callback([
     Output('powell-levels', 'figure'),
-    Output('mead-levels', 'figure')],
+    Output('mead-levels', 'figure'),
+    Output('combo-levels', 'figure')],
     [Input('powell-water-data', 'data'),
-    Input('mead-water-data', 'data')])
-def lake_graphs(powell_data, mead_data):
+    Input('mead-water-data', 'data'),
+    Input('combo-water-data', 'data')])
+def lake_graphs(powell_data, mead_data, combo_data):
     powell_df = pd.read_json(powell_data)
     mead_df = pd.read_json(mead_data)
+    combo_df = pd.read_json(combo_data)
 
     powell_traces = []
     mead_traces = []
+    combo_traces = []
 
     data = powell_df.sort_index()
     # title = 'Lake Powell'
@@ -157,6 +190,11 @@ def lake_graphs(powell_data, mead_data):
         name = 'Power level'
     )),
 
+    combo_traces.append(go.Scatter(
+        y = combo_df['Value'],
+        x = combo_df.index,
+    ))
+
     powell_layout = go.Layout(
         height =400,
         title = 'Lake Powell',
@@ -175,9 +213,18 @@ def lake_graphs(powell_data, mead_data):
         font=dict(color="#2cfec1"),
     )
 
+    combo_layout = go.Layout(
+        height =400,
+        title = 'Powell and Mead Total Storage',
+        yaxis = {'title':'Volume (AF)'},
+        paper_bgcolor="#1f2630",
+        plot_bgcolor="#1f2630",
+        font=dict(color="#2cfec1"),
+    )
+
 
     time.sleep(5)
-    return {'data': powell_traces, 'layout': powell_layout}, {'data': mead_traces, 'layout': mead_layout}
+    return {'data': powell_traces, 'layout': powell_layout}, {'data': mead_traces, 'layout': mead_layout}, {'data': combo_traces, 'layout': combo_layout}
 
 
 if __name__ == '__main__':
