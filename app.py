@@ -24,30 +24,31 @@ app.layout = html.Div([
             className='twelve columns',
             style={'text-align': 'center'}
         ),
+    ],
+        className='row'
+    ),
+    html.Div([
         html.Div([
             dcc.Loading(
-                id="loading-powell",
-                type="default",
-                children=html.Div(dcc.Graph(id='powell-levels'))
-            )
+            id="loading-powell",
+            type="default",
+            children=html.Div(dcc.Graph(id='powell-levels'))),
         ],
             className='four columns'
         ),
         html.Div([
             dcc.Loading(
-                id="loading-mead",
-                type="default",
-                children=html.Div(dcc.Graph(id='mead-levels'))
-            )
+            id="loading-mead",
+            type="default",
+            children=html.Div(dcc.Graph(id='mead-levels'))),
         ],
             className='four columns'
         ),
         html.Div([
             dcc.Loading(
-                id="loading-combo",
-                type="default",
-                children=html.Div(dcc.Graph(id='combo-levels'))
-            )
+            id="loading-combo",
+            type="default",
+            children=html.Div(dcc.Graph(id='combo-levels'))),
         ],
             className='four columns'
         ),
