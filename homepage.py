@@ -130,6 +130,55 @@ def home_page_App():
         ],
             className='row'
         ),
+        html.Div([
+            html.Div([
+                html.H6('Current Storage - AF', style={'text-align': 'center'})
+            ],
+                className='three columns'
+            ),
+            html.Div([
+                html.H6('Pct. Full', style={'text-align': 'center'})
+            ],
+                className='one column'
+            ),
+            html.Div([
+                html.H6('24 hr', style={'text-align': 'center'})
+            ],
+                className='one column'
+            ),
+            html.Div([
+                html.H6('C.Y.', style={'text-align': 'center'})
+            ],
+                className='one column'
+            ),
+            html.Div([
+                html.H6('Year', style={'text-align': 'center'})
+            ],
+                className='one column'
+            ),
+            html.Div([
+                html.H6('Rec Low', style={'text-align': 'center'})
+            ],
+                className='one column'
+            ),
+            html.Div([
+                html.H6('Diff', style={'text-align': 'center'})
+            ],
+                className='one column'
+            ),
+            html.Div([
+                html.H6('Rec Low Date', style={'text-align': 'center'})
+            ],
+                className='two columns'
+            ),
+        ],
+            className='row'
+        ),
+        html.Div([
+            html.Div(id='cur-levels')
+        ],
+            className='row'
+        ),
         dcc.Interval(
             id='interval-component',
             interval=300*1000, # in milliseconds
@@ -138,6 +187,9 @@ def home_page_App():
         dcc.Store(id='powell-water-data'),
         dcc.Store(id='mead-water-data'),
         dcc.Store(id='combo-water-data'),
+        html.Div(id='powell-annual-change', style={'display': 'none'}),
+        html.Div(id='mead-annual-change', style={'display': 'none'}),
+        html.Div(id='combo-annual-change', style={'display': 'none'}),
 
     ])
 
