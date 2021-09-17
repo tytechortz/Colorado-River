@@ -1,79 +1,27 @@
 import dash
 from dash import html, dcc
 from dash.dependencies import Input, Output, State
+import plotly.express as px
+import plotly.graph_objs as go
+import pandas as pd
+import numpy as np
+from datetime import datetime as dt
+from app import app
+# import dash_bootstrap_components as dbc
+# import callbacks
+from datetime import datetime, date, timedelta
 import time
 import requests
 import csv
-import pandas as pd
-import plotly.graph_objs as go
-from datetime import datetime, date, timedelta
-
-
-app = dash.Dash(__name__)
-app.config['suppress_callback_exceptions']=True
-
-server = app.server
 
 today = time.strftime("%Y-%m-%d")
 print(today)
-
-app.layout = html.Div([
-    # html.Div([
-    #     html.H2(
-    #         'Colorado River Water Storage',
-    #         className='twelve columns',
-    #         style={'text-align': 'center'}
-    #     ),
-    # ],
-    #     className='row'
-    # ),
-    html.Div([
-        html.Div([
-            dcc.Loading(
-            id="loading-powell",
-            type="default",
-            children=html.Div(dcc.Graph(id='powell-levels'))),
-        ],
-            className='four columns'
-        ),
-        html.Div([
-            dcc.Loading(
-            id="loading-mead",
-            type="default",
-            children=html.Div(dcc.Graph(id='mead-levels'))),
-        ],
-            className='four columns'
-        ),
-        html.Div([
-            dcc.Loading(
-            id="loading-combo",
-            type="default",
-            children=html.Div(dcc.Graph(id='combo-levels'))),
-        ],
-            className='four columns'
-        ),
-    ],
-        className='row'
-    ),
-    dcc.Interval(
-        id='interval-component',
-        interval=300*1000, # in milliseconds
-        n_intervals=0
-    ),
-    dcc.Store(id='powell-water-data'),
-    dcc.Store(id='mead-water-data'),
-    dcc.Store(id='combo-water-data'),
-])
 
 
 @app.callback([
     Output('powell-water-data', 'data'),
     Output('mead-water-data', 'data'),
     Output('combo-water-data', 'data')],
-    #Output('combo-water-data', 'children'),
-    #Output('blue-mesa-water-data', 'children'),
-    #Output('navajo-water-data', 'children'),
-    #Output('fg-water-data', 'children')],
     Input('interval-component', 'n_intervals'))
 def clean_powell_data(n):
 
@@ -105,7 +53,6 @@ def clean_powell_data(n):
 
         df_powell_water = df_powell_water.set_index("Date")
         df_powell_water = df_powell_water.sort_index()
-        # print(df_powell_water)
 
         mead_download = s.get(mead_data)
 
@@ -146,13 +93,9 @@ def clean_powell_data(n):
     
     # combo_df = df_total.drop(df_total.index[0])
     combo_df = df_total
+    print(combo_df)
 
     return powell_df.to_json(), mead_df.to_json(), combo_df.to_json()
-
-# @app.callback(Output("loading-output-1", "children"), Input("powell-water-data", "data"))
-# def input_triggers_spinner(value):
-#     time.sleep(5)
-#     return value
 
 @app.callback([
     Output('powell-levels', 'figure'),
@@ -226,7 +169,3 @@ def lake_graphs(powell_data, mead_data, combo_data):
 
     time.sleep(5)
     return {'data': powell_traces, 'layout': powell_layout}, {'data': mead_traces, 'layout': mead_layout}, {'data': combo_traces, 'layout': combo_layout}
-
-
-if __name__ == '__main__':
-    app.run_server(port=8080, debug=True)

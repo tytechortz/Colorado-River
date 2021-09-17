@@ -17,10 +17,10 @@ app.layout = html.Div([
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
 def display_page(pathname):
-    if pathname == '/apps/upper-res':
-         return ur_App()
-    else:
-        return home_page_App()
+    # if pathname == '/apps/ur':
+    #     return ur_App()
+    # else:
+    return home_page_App()
 
 if __name__ == '__main__':
     app.run_server(port=8080, debug=True)

@@ -1,14 +1,18 @@
 import dash
 from dash import html, dcc
-
+from dash.dependencies import Input, Output, State
 import plotly.express as px
 import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
 from datetime import datetime as dt
 from app import app
-import dash_bootstrap_components as dbc
-
+# import dash_bootstrap_components as dbc
+# import callbacks
+from datetime import datetime, date, timedelta
+import time
+import requests
+import csv
 
 
 
@@ -16,7 +20,6 @@ app = dash.Dash(__name__)
 app.config['suppress_callback_exceptions']=True
 
 server = app.server
-
 
 def get_header():
 
@@ -34,19 +37,6 @@ def get_header():
             className='row'
         ),
     ])
-
-        # html.Div([
-        #     html.H1(children='Colorado Cannabis',
-        #             style = {'textAlign' : 'center', 'color':'white'}
-        #     )],
-        #     className='col-12',
-        #     style = {'padding-top' : '1%'}
-        # ),
-        # ],
-        # className = 'row',
-        # style = {'height' : '4%',
-        #         'background-color' : 'green'}
-        # )
 
     return header
 
@@ -110,8 +100,48 @@ def home_page_App():
     return html.Div([
         get_header(),
         get_navbar('homepage'),
-        get_emptyrow()
+        get_emptyrow(),
+
+        html.Div([
+            html.Div([
+                dcc.Loading(
+                id="loading-powell",
+                type="default",
+                children=html.Div(dcc.Graph(id='powell-levels'))),
+            ],
+                className='four columns'
+            ),
+            html.Div([
+                dcc.Loading(
+                id="loading-mead",
+                type="default",
+                children=html.Div(dcc.Graph(id='mead-levels'))),
+            ],
+                className='four columns'
+            ),
+            html.Div([
+                dcc.Loading(
+                id="loading-combo",
+                type="default",
+                children=html.Div(dcc.Graph(id='combo-levels'))),
+            ],
+                className='four columns'
+            ),
+        ],
+            className='row'
+        ),
+        dcc.Interval(
+            id='interval-component',
+            interval=300*1000, # in milliseconds
+            n_intervals=0
+        ),
+        dcc.Store(id='powell-water-data'),
+        dcc.Store(id='mead-water-data'),
+        dcc.Store(id='combo-water-data'),
+
     ])
-    
+
+app.layout = home_page_App
 
    
+
