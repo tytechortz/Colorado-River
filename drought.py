@@ -28,3 +28,23 @@ df.set_index('date', inplace=True)
 print(df)
 df['DSCI'] = (df['D0'] + (df['D1']*2) + (df['D2']*3) + (df['D3']*4 + (df['D4']*5)))
 print(df)
+
+app = dash.Dash(__name__)
+app.config['suppress_callback_exceptions']=True
+
+server = app.server
+
+app.layout = html.Div([
+    html.Div([
+        html.H2(
+            'Drought',
+            className='twelve columns',
+            style={'text-align': 'center'}
+        )
+    ],
+        className='row'
+    ),
+])
+
+if __name__ == '__main__':
+    app.run_server(port=8010, debug=True)
