@@ -13,6 +13,7 @@ from datetime import datetime, date, timedelta
 import time
 import requests
 import csv
+import io
 
 today = time.strftime("%Y-%m-%d")
 print(today)
@@ -23,6 +24,55 @@ delta = today2 - f_date
 days = delta.days
 
 capacities = {'Lake Powell Glen Canyon Dam and Powerplant': 24322000, 'Lake Mead Hoover Dam and Powerplant': 26134000, 'FLAMING GORGE RESERVOIR': 3788700, 'NAVAJO RESERVOIR': 1708600, 'BLUE MESA RESERVOIR': 940800, 'Powell Mead Combo': 50456000}
+
+
+
+
+@app.callback(
+    Output('drought-data', 'data'),
+    Input('interval-component', 'n_intervals'))
+def data(n):
+    url = 'https://usdmdataservices.unl.edu/api/StateStatistics/GetDroughtSeverityStatisticsByAreaPercent?aoi=08&startdate=1/1/2000&enddate=' + today + '&statisticsType=2'
+
+    r = requests.get(url).content
+
+    df = pd.read_json(io.StringIO(r.decode('utf-8')))
+    print(df)
+
+    df['date'] = pd.to_datetime(df['MapDate'].astype(str), format='%Y%m%d')
+
+    df.drop(['StatisticFormatID', 'StateAbbreviation', 'MapDate'] , axis=1, inplace=True)
+    df.set_index('date', inplace=True)
+    # print(df)
+    df['DSCI'] = (df['D0'] + (df['D1']*2) + (df['D2']*3) + (df['D3']*4 + (df['D4']*5)))
+
+    return df.to_json()
+
+
+
+@app.callback(
+    Output('drought-graph', 'figure'),
+    Input('drought-data', 'data'))
+def drought_graph(data):
+    df = pd.read_json(data)
+
+    drought_traces = []
+
+    drought_traces.append(go.Scatter(
+        y = df['DSCI'],
+        x = df.index,
+    )),
+
+    drought_layout = go.Layout(
+        height =600,
+        title = 'DSCI',
+        yaxis = {'title':'DSCI'},
+        paper_bgcolor="#1f2630",
+        plot_bgcolor="#1f2630",
+        font=dict(color="#2cfec1"),
+    )
+
+    return {'data': drought_traces, 'layout': drought_layout}
 
 
 @app.callback([

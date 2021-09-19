@@ -53,6 +53,15 @@ def get_navbar(p = 'homepage'):
             className='col-2',
             style={'text-align': 'center'}
         ),
+        html.Div([
+            dcc.Link(
+                html.H6(children='Drought'),
+                href='/apps/drought'
+            )
+        ],
+            className='col-2',
+            style={'text-align': 'center'}
+        ),
         html.Div([], className = 'col-2')
     ],
     className = 'row',

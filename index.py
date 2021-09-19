@@ -5,6 +5,7 @@ from app import app
 from app import server
 from homepage import home_page_App
 from apps.powell import powell_App
+from apps.drought import drought_App
 
 
 import callbacks
@@ -14,13 +15,15 @@ app.layout = html.Div([
     html.Div(id='page-content')
 ])
 
-@app.callback(dash.dependencies.Output('page-content', 'children'),
+@app.callback(dash.dependencies.Output                    ('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
 def display_page(pathname):
     # if pathname == '/apps/ur':
     #     return ur_App()
     if pathname == '/apps/powell':
         return powell_App()
+    elif pathname == '/apps/drought':
+        return drought_App()
     else:
         return home_page_App()
 
