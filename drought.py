@@ -2,8 +2,19 @@ import requests
 import csv
 import pandas as pd
 import io
+import dash
+from dash import html, dcc
+import plotly.graph_objs as go
+import pandas as pd
+import numpy as np
+from dash.dependencies import Input, Output, State
+import time
+from datetime import datetime, date, timedelta
+# from data import powell_df
 
-url = "https://usdmdataservices.unl.edu/api/StateStatistics/GetDroughtSeverityStatisticsByAreaPercent?aoi=08&startdate=1/1/2000&enddate=9/17/2021&statisticsType=2"
+today = time.strftime("%Y-%m-%d")
+
+url = 'https://usdmdataservices.unl.edu/api/StateStatistics/GetDroughtSeverityStatisticsByAreaPercent?aoi=08&startdate=1/1/2000&enddate=' + today + '&statisticsType=2'
 
 r = requests.get(url).content
 
