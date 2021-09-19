@@ -183,8 +183,9 @@ def lake_graphs(powell_data, mead_data, combo_data):
     Output('combo-annual-change', 'data')],
     [Input('powell-water-data', 'data'),
     Input('mead-water-data', 'data'),
-    Input('combo-water-data', 'data')])
-def get_current_volumes(powell_data, mead_data, combo_data):
+    Input('combo-water-data', 'data'),
+    Input('interval-component','n_intervals')])
+def get_current_volumes(powell_data, mead_data, combo_data, n):
     powell_data = pd.read_json(powell_data)
     powell_data.sort_index()
     powell_current_volume = powell_data.iloc[-1,1]

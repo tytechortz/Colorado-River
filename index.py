@@ -4,7 +4,7 @@ from dash import html, dcc
 from app import app
 from app import server
 from homepage import home_page_App
-# from apps.ur import ur_App
+from apps.powell import powell_App
 
 
 import callbacks
@@ -19,8 +19,10 @@ app.layout = html.Div([
 def display_page(pathname):
     # if pathname == '/apps/ur':
     #     return ur_App()
-    # else:
-    return home_page_App()
+    if pathname == '/apps/powell':
+        return powell_App()
+    else:
+        return home_page_App()
 
 if __name__ == '__main__':
     app.run_server(port=8080, debug=True)

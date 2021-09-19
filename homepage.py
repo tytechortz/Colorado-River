@@ -59,7 +59,7 @@ def get_navbar(p = 'homepage'):
     style = {'background-color' : 'dark-green',
             'box-shadow': '2px 5px 5px 1px rgba(0, 100, 0, .5)'}
     )
-    navbar_ur = html.Div([
+    non_home = html.Div([
         html.Div([], className='col-2'),
         html.Div([
             dcc.Link(
@@ -78,8 +78,8 @@ def get_navbar(p = 'homepage'):
     )
     if p == 'homepage':
         return navbar_homepage
-    elif p == 'revenue':
-        return navbar_ur
+    else:
+        return non_home
     
 def get_emptyrow(h='15px'):
     """This returns an empty row of a defined height"""
@@ -205,9 +205,22 @@ def home_page_App():
         ],
             className='row'
         ),
+        html.Div([
+            html.Div([
+                dcc.Link(
+                    html.H6(children='Powell Data'),
+                    href='/apps/powell'
+                )
+            ],
+                className='four columns',
+                style={'text-align': 'center'}
+            ),
+        ],
+            className='row'
+        ),
         dcc.Interval(
             id='interval-component',
-            interval=300*1000, # in milliseconds
+            interval=3000*1000, # in milliseconds
             n_intervals=0
         ),
         dcc.Store(id='powell-water-data'),
