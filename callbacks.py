@@ -54,7 +54,7 @@ def data(n):
 @app.callback(
     Output('drought-graph', 'figure'),
     [Input('drought-data', 'data'),
-    Input('combo-annual-change', 'data')])
+    Input('combo-water-data', 'data')])
 def drought_graph(data, combo_data):
     df = pd.read_json(data)
     drought_traces = []
@@ -65,17 +65,20 @@ def drought_graph(data, combo_data):
     drought_traces.append(go.Scatter(
         y = df['DSCI'],
         x = df.index,
+        yaxis='y'
     )),
-    drought_traces.append(go.Bar(
-        y = df_combo['diff'],
+    drought_traces.append(go.Scatter(
+        y = df_combo['Value'],
         x = df_combo.index,
-        marker_color = df_combo['color']
+        yaxis ='y2',
+        marker_color = 'blue'
     )),
 
     drought_layout = go.Layout(
         height =600,
         title = 'DSCI',
         yaxis = {'title':'DSCI'},
+        yaxis2 = {'title': 'MAF', 'overlaying': 'y', 'side': 'right'},
         paper_bgcolor="#1f2630",
         plot_bgcolor="#1f2630",
         font=dict(color="#2cfec1"),
