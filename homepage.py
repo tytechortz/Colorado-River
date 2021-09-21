@@ -229,15 +229,15 @@ def home_page_App():
         ),
         dcc.Interval(
             id='interval-component',
-            interval=3000*1000, # in milliseconds
+            interval=500*1000, # in milliseconds
             n_intervals=0
         ),
         dcc.Store(id='powell-water-data'),
         dcc.Store(id='mead-water-data'),
         dcc.Store(id='combo-water-data'),
-        html.Div(id='powell-annual-change', style={'display': 'none'}),
-        html.Div(id='mead-annual-change', style={'display': 'none'}),
-        html.Div(id='combo-annual-change', style={'display': 'none'}),
+        dcc.Store(id='powell-annual-change'),
+        dcc.Store(id='mead-annual-change'),
+        dcc.Store(id='combo-annual-change'),
 
     ])
 
