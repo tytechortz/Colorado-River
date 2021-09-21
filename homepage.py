@@ -232,12 +232,12 @@ def home_page_App():
             interval=500*1000, # in milliseconds
             n_intervals=0
         ),
-        dcc.Store(id='powell-water-data'),
-        dcc.Store(id='mead-water-data'),
-        dcc.Store(id='combo-water-data'),
-        dcc.Store(id='powell-annual-change'),
-        dcc.Store(id='mead-annual-change'),
-        dcc.Store(id='combo-annual-change'),
+        # dcc.Store(id='powell-water-data'),
+        # dcc.Store(id='mead-water-data'),
+        # dcc.Store(id='combo-water-data'),
+        # dcc.Store(id='powell-annual-change'),
+        # dcc.Store(id='mead-annual-change'),
+        # dcc.Store(id='combo-annual-change'),
     ])
 
 app.layout = home_page_App

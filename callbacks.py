@@ -27,15 +27,14 @@ capacities = {'Lake Powell Glen Canyon Dam and Powerplant': 24322000, 'Lake Mead
 
 
 
-
 @app.callback(
     Output('drought-data', 'data'),
     Input('drought-interval-component', 'n_intervals'))
 def data(n):
     url = 'https://usdmdataservices.unl.edu/api/StateStatistics/GetDroughtSeverityStatisticsByAreaPercent?aoi=08&startdate=1/1/2000&enddate=' + today + '&statisticsType=2'
 
-
-
+    # combo_data = pd.read_json(com)
+    # print(combo_data)
     r = requests.get(url).content
 
     df = pd.read_json(io.StringIO(r.decode('utf-8')))
@@ -54,20 +53,24 @@ def data(n):
 
 @app.callback(
     Output('drought-graph', 'figure'),
-    Input('drought-data', 'data'))
-def drought_graph(data):
+    [Input('drought-data', 'data'),
+    Input('combo-annual-change', 'data')])
+def drought_graph(data, combo_data):
     df = pd.read_json(data)
     drought_traces = []
+
+    df_combo = pd.read_json(combo_data)
+    print(df_combo)
 
     drought_traces.append(go.Scatter(
         y = df['DSCI'],
         x = df.index,
     )),
-    # drought_traces.append(go.Bar(
-    #     y = df_combo['diff'],
-    #     x = df_combo.index,
-    #     marker_color = df_combo['color']
-    # )),
+    drought_traces.append(go.Bar(
+        y = df_combo['diff'],
+        x = df_combo.index,
+        marker_color = df_combo['color']
+    )),
 
     drought_layout = go.Layout(
         height =600,
@@ -533,3 +536,4 @@ def change_graphs(powell_data, mead_data, combo_data):
     )
 
     return {'data': powell_traces, 'layout': powell_layout}, {'data': mead_traces, 'layout': mead_layout}, {'data': combo_traces, 'layout': combo_layout}
+

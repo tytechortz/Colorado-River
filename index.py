@@ -12,7 +12,13 @@ import callbacks
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
-    html.Div(id='page-content')
+    html.Div(id='page-content'),
+    dcc.Store(id='powell-water-data'),
+    dcc.Store(id='mead-water-data'),
+    dcc.Store(id='combo-water-data'),
+    dcc.Store(id='powell-annual-change'),
+    dcc.Store(id='mead-annual-change'),
+    dcc.Store(id='combo-annual-change'),
 ])
 
 @app.callback(dash.dependencies.Output                    ('page-content', 'children'),

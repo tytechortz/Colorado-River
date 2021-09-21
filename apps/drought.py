@@ -39,9 +39,10 @@ def drought_App():
                 n_intervals=0
             ),
             dcc.Store(id='drought-data'),
-            dcc.Store(id='combo-annual-change-drought'), 
-            dcc.Store(id='combo-levels-drought'),
-            dcc.Store(id='combo-water-drought'),   
+            # dcc.Store(id='combo-water-data'),
+            # dcc.Store(id='combo-annual-change-drought'), 
+            # dcc.Store(id='combo-levels-drought'),
+            # dcc.Store(id='combo-water-drought'),   
         ])
     ])
 
