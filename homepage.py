@@ -238,7 +238,6 @@ def home_page_App():
         dcc.Store(id='powell-annual-change'),
         dcc.Store(id='mead-annual-change'),
         dcc.Store(id='combo-annual-change'),
-
     ])
 
 app.layout = home_page_App

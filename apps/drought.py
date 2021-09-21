@@ -33,14 +33,15 @@ def drought_App():
             ],  
                 className='row'
             ),
-            # dcc.Interval(
-            #     id='drought-interval-component',
-            #     interval=300*1000, # in milliseconds
-            #     n_intervals=0
-            # ),
-            # dcc.Store(id='drought-data'),
-            # dcc.Store(id='combo-annual-change-drought'), 
-            # dcc.Store(id='combo-annual-change'),   
+            dcc.Interval(
+                id='drought-interval-component',
+                interval=100*1000, # in milliseconds
+                n_intervals=0
+            ),
+            dcc.Store(id='drought-data'),
+            dcc.Store(id='combo-annual-change-drought'), 
+            dcc.Store(id='combo-levels-drought'),
+            dcc.Store(id='combo-water-drought'),   
         ])
     ])
 

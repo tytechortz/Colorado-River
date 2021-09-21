@@ -28,84 +28,57 @@ capacities = {'Lake Powell Glen Canyon Dam and Powerplant': 24322000, 'Lake Mead
 
 
 
-# @app.callback(
-#     Output('drought-data', 'data'),
-#     Input('drought-interval-component', 'n_intervals'))
-# def data(n):
-#     url = 'https://usdmdataservices.unl.edu/api/StateStatistics/GetDroughtSeverityStatisticsByAreaPercent?aoi=08&startdate=1/1/2000&enddate=' + today + '&statisticsType=2'
-
-#     r = requests.get(url).content
-
-#     df = pd.read_json(io.StringIO(r.decode('utf-8')))
-#     print(df)
-
-#     df['date'] = pd.to_datetime(df['MapDate'].astype(str), format='%Y%m%d')
-
-#     df.drop(['StatisticFormatID', 'StateAbbreviation', 'MapDate'] , axis=1, inplace=True)
-#     df.set_index('date', inplace=True)
-#     # print(df)
-#     df['DSCI'] = (df['D0'] + (df['D1']*2) + (df['D2']*3) + (df['D3']*4 + (df['D4']*5)))
-
-#     return df.to_json()
-
-# @app.callback(
-#     Output('combo-annual-change-drought', 'data'),
-#     Input('combo-annual-change', 'data'))
-# def data(combo_data):
-    
-#     combo_data = pd.read_json(combo_data)
-#     print(combo_data)
-    # combo_current_volume = combo_data['Value'][-1]
-    # combo_current_volume_date = combo_data.index[-1]
-    # combo_pct = combo_current_volume / capacities['Powell Mead Combo']
-    # combo_last_v = combo_data['Value'][-2]
-    # combo_tfh_change = combo_current_volume - combo_data['Value'][-2]
-    # combo_cy = combo_current_volume - combo_data['Value'][-days]
-    # combo_yr = combo_current_volume - combo_data['Value'][-366]
-   
-    # combo_last = combo_data.groupby(combo_data.index.strftime('%Y')).tail(1)
-    # combo_last['diff'] = combo_last['Value'].diff()
-    # combo_last['color'] = np.where(combo_last['diff'] < 0, 'red', 'green')
-    # combo_annual_min = combo_data.resample('Y').min()
-    # combo_min_twok = combo_annual_min[(combo_annual_min.index.year > 1999)]
-    # combo_rec_low = combo_min_twok['Value'].min()
-    # combo_dif_rl = combo_data['Value'].iloc[-1] - combo_rec_low
-    # combo_rec_low_date = combo_data['Value'].idxmin().strftime('%Y-%m-%d')
-
-    # return combo_data.to_json()
+@app.callback(
+    Output('drought-data', 'data'),
+    Input('drought-interval-component', 'n_intervals'))
+def data(n):
+    url = 'https://usdmdataservices.unl.edu/api/StateStatistics/GetDroughtSeverityStatisticsByAreaPercent?aoi=08&startdate=1/1/2000&enddate=' + today + '&statisticsType=2'
 
 
 
-# @app.callback(
-#     Output('drought-graph', 'figure'),
-#     [Input('drought-data', 'data'),
-#     Input('combo-annual-change-drought', 'data')])
-# def drought_graph(data, combo_data):
-#     df = pd.read_json(data)
-#     # df_combo = pd.read_json(combo_data)
-#     # print(df_combo)
-#     drought_traces = []
+    r = requests.get(url).content
 
-#     drought_traces.append(go.Scatter(
-#         y = df['DSCI'],
-#         x = df.index,
-#     )),
+    df = pd.read_json(io.StringIO(r.decode('utf-8')))
+    # print(df)
+
+    df['date'] = pd.to_datetime(df['MapDate'].astype(str), format='%Y%m%d')
+
+    df.drop(['StatisticFormatID', 'StateAbbreviation', 'MapDate'] , axis=1, inplace=True)
+    df.set_index('date', inplace=True)
+    # print(df)
+    df['DSCI'] = (df['D0'] + (df['D1']*2) + (df['D2']*3) + (df['D3']*4 + (df['D4']*5)))
+
+    return df.to_json()
+
+
+
+@app.callback(
+    Output('drought-graph', 'figure'),
+    Input('drought-data', 'data'))
+def drought_graph(data):
+    df = pd.read_json(data)
+    drought_traces = []
+
+    drought_traces.append(go.Scatter(
+        y = df['DSCI'],
+        x = df.index,
+    )),
     # drought_traces.append(go.Bar(
     #     y = df_combo['diff'],
     #     x = df_combo.index,
     #     marker_color = df_combo['color']
     # )),
 
-    # drought_layout = go.Layout(
-    #     height =600,
-    #     title = 'DSCI',
-    #     yaxis = {'title':'DSCI'},
-    #     paper_bgcolor="#1f2630",
-    #     plot_bgcolor="#1f2630",
-    #     font=dict(color="#2cfec1"),
-    # )
+    drought_layout = go.Layout(
+        height =600,
+        title = 'DSCI',
+        yaxis = {'title':'DSCI'},
+        paper_bgcolor="#1f2630",
+        plot_bgcolor="#1f2630",
+        font=dict(color="#2cfec1"),
+    )
 
-    # return {'data': drought_traces, 'layout': drought_layout}
+    return {'data': drought_traces, 'layout': drought_layout}
 
 
 @app.callback([
@@ -505,7 +478,7 @@ def change_graphs(powell_data, mead_data, combo_data):
     # print(df_powell)
     # print(df_mead)
     # df_combo = df_combo.drop(df_combo.columns[[2,3,4,5]], axis=1)
-    print(df_combo)
+    # print(df_combo)
     # df_powell['diff'] = (df_powell['diff'] !='n').astype(int)
 
     mead_traces = []
