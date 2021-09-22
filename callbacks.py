@@ -567,6 +567,8 @@ def get_current_volumes_upper(bm_data, nav_data, fg_data):
     nav_cy = nav_current_volume - nav_data['Value'][-days]
     nav_yr = nav_current_volume - nav_data['Value'][-366]
     nav_rec_low = nav_data['Value'].min()
+    nav_dif_rl = nav_data['Value'].iloc[-1] - nav_rec_low
+    nav_rec_low_date = nav_data['Value'].idxmin().strftime('%Y-%m-%d')
 
     fg_data = pd.read_json(fg_data)
     fg_data.sort_index()
@@ -662,6 +664,16 @@ def get_current_volumes_upper(bm_data, nav_data, fg_data):
                 html.H6('{:,.0f}'.format(nav_rec_low), style={'text-align': 'center'})
             ],
                 className='one column'
+            ),
+            html.Div([
+                html.H6('{:,.0f}'.format(nav_dif_rl), style={'text-align': 'center'})
+            ],
+                className='one column'
+            ),
+            html.Div([
+                html.H6('{}'.format(nav_rec_low_date), style={'text-align': 'center'})
+            ],
+                className='two columns'
             ),
         ],
             className = 'row'
