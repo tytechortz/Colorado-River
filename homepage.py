@@ -62,7 +62,7 @@ def get_navbar(p = 'homepage'):
             className='col-2',
             style={'text-align': 'center'}
         ),
-        html.Div([], className = 'col-2')
+        html.Div([], className = 'col-2'),
     ],
     className = 'row',
     style = {'background-color' : 'dark-green',

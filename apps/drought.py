@@ -35,7 +35,7 @@ def drought_App():
             ),
             dcc.Interval(
                 id='drought-interval-component',
-                interval=100*1000, # in milliseconds
+                interval=10000*1000, # in milliseconds
                 n_intervals=0
             ),
             dcc.Store(id='drought-data'),
