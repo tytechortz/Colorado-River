@@ -578,6 +578,8 @@ def get_current_volumes_upper(bm_data, nav_data, fg_data):
     fg_cy = fg_current_volume - fg_data['Value'][-days]
     fg_yr = fg_current_volume - fg_data['Value'][-366]
     fg_rec_low = fg_data['Value'].min()
+    fg_dif_rl = fg_data['Value'].iloc[-1] - fg_rec_low
+    fg_rec_low_date = fg_data['Value'].idxmin().strftime('%Y-%m-%d')
 
     return html.Div([
         html.Div([
@@ -713,6 +715,16 @@ def get_current_volumes_upper(bm_data, nav_data, fg_data):
                 html.H6('{:,.0f}'.format(fg_rec_low), style={'text-align': 'center'})
             ],
                 className='one column'
+            ),
+            html.Div([
+                html.H6('{:,.0f}'.format(fg_dif_rl), style={'text-align': 'center'})
+            ],
+                className='one column'
+            ),
+            html.Div([
+                html.H6('{}'.format(fg_rec_low_date), style={'text-align': 'center'})
+            ],
+                className='two columns'
             ),
         ],
             className = 'row'
