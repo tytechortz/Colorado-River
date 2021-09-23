@@ -121,7 +121,7 @@ def clean_powell_data(n):
         df_powell_water = pd.DataFrame(crp)
         
         df_powell_water = df_powell_water.drop(df_powell_water.columns[[1,3,4,5,7,8]], axis=1)
-        df_powell_water.columns = ["Site", "Value", "Date"]
+        df_powell_water.columns = ["Site", "Water Level", "Date"]
     
         df_powell_water = df_powell_water[1:]
         
@@ -141,7 +141,7 @@ def clean_powell_data(n):
         for i in range(9): next(crm)
         df_mead_water = pd.DataFrame(crm)
         df_mead_water = df_mead_water.drop(df_mead_water.columns[[1,3,4,5,7,8]], axis=1)
-        df_mead_water.columns = ["Site", "Value", "Date"]
+        df_mead_water.columns = ["Site", "Water Level", "Date"]
     
         df_mead_water['1090'] = 10857000
         df_mead_water['1075'] = 9601000
@@ -167,9 +167,9 @@ def clean_powell_data(n):
   
     df_total.rename(columns={'Date_x':'Date'}, inplace=True)
     
-    df_total['Value_x'] = df_total['Value_x'].astype(int)
-    df_total['Value_y'] = df_total['Value_y'].astype(int)
-    df_total['Value'] = df_total['Value_x'] + df_total['Value_y']
+    df_total['Value_x'] = df_total['Water Level_x'].astype(int)
+    df_total['Value_y'] = df_total['Water Level_y'].astype(int)
+    df_total['Water Level'] = df_total['Value_x'] + df_total['Value_y']
     
     # combo_df = df_total.drop(df_total.index[0])
     combo_df = df_total
@@ -196,7 +196,7 @@ def lake_graphs(powell_data, mead_data, combo_data):
     data = powell_df.sort_index()
     # title = 'Lake Powell'
     powell_traces.append(go.Scatter(
-        y = powell_df['Value'],
+        y = powell_df['Water Level'],
         x = powell_df.index,
         name='Water Level'
     )),
@@ -221,7 +221,7 @@ def lake_graphs(powell_data, mead_data, combo_data):
     )),
 
     combo_traces.append(go.Scatter(
-        y = combo_df['Value'],
+        y = combo_df['Water Level'],
         x = combo_df.index,
     ))
 
@@ -273,64 +273,64 @@ def get_current_volumes(powell_data, mead_data, combo_data, n):
     cvd = str(powell_current_volume_date)
     powell_last_v = powell_data.iloc[-1,0]
     powell_pct = powell_current_volume / capacities['Lake Powell Glen Canyon Dam and Powerplant']
-    powell_tfh_change = powell_current_volume - powell_data['Value'][-2]
-    powell_cy = powell_current_volume - powell_data['Value'][-days]
-    powell_yr = powell_current_volume - powell_data['Value'][-366]
+    powell_tfh_change = powell_current_volume - powell_data['Water Level'][-2]
+    powell_cy = powell_current_volume - powell_data['Water Level'][-days]
+    powell_yr = powell_current_volume - powell_data['Water Level'][-366]
     powell_last = powell_data.groupby(powell_data.index.strftime('%Y')).tail(1)
    
     # powell_last['diff'] = powell_last['Value'] - powell_last['Value'].shift(1)
-    powell_last['diff'] = powell_last['Value'].diff()
+    powell_last['diff'] = powell_last['Water Level'].diff()
     powell_last['color'] = np.where(powell_last['diff'] < 0, 'red', 'green')
    
     powell_annual_min = powell_data.resample('Y').min()
     powell_min_twok = powell_annual_min[(powell_annual_min.index.year > 1999)]
-    powell_rec_low = powell_min_twok['Value'].min()
-    powell_dif_rl = powell_data['Value'].iloc[-1] - powell_rec_low
+    powell_rec_low = powell_min_twok['Water Level'].min()
+    powell_dif_rl = powell_data['Water Level'].iloc[-1] - powell_rec_low
     # powell_rec_diff = powell_current_volume - powel
     
-    powell_rec_low_date = powell_data['Value'].idxmin().strftime('%Y-%m-%d')
+    powell_rec_low_date = powell_data['Water Level'].idxmin().strftime('%Y-%m-%d')
     # print(powell_rec_low_date)
 
     mead_data = pd.read_json(mead_data)
     mead_data.sort_index()
     mead_current_volume = mead_data.iloc[-0,-0]
-    mead_current_volume = mead_data['Value'].iloc[-1]
+    mead_current_volume = mead_data['Water Level'].iloc[-1]
     mead_pct = mead_current_volume / capacities['Lake Mead Hoover Dam and Powerplant']
     mead_last_v = mead_data.iloc[-1,0]
-    mead_tfh_change = mead_current_volume - mead_data['Value'][-2]
-    mead_cy = mead_current_volume - mead_data['Value'][-days]
-    mead_yr = mead_current_volume - mead_data['Value'][-366]
+    mead_tfh_change = mead_current_volume - mead_data['Water Level'][-2]
+    mead_cy = mead_current_volume - mead_data['Water Level'][-days]
+    mead_yr = mead_current_volume - mead_data['Water Level'][-366]
     mead_last = mead_data.groupby(mead_data.index.strftime('%Y')).tail(1)
     mead_annual_min = mead_data.resample('Y').min()
     mead_min_twok = mead_annual_min[(mead_annual_min.index.year > 1999)]
-    mead_rec_low = mead_min_twok['Value'].min()
-    mead_dif_rl = mead_data['Value'].iloc[-1] - mead_rec_low
+    mead_rec_low = mead_min_twok['Water Level'].min()
+    mead_dif_rl = mead_data['Water Level'].iloc[-1] - mead_rec_low
     
     # powell_last['diff'] = powell_last['Value'] - powell_last['Value'].shift(1)
-    mead_last['diff'] = mead_last['Value'].diff()
+    mead_last['diff'] = mead_last['Water Level'].diff()
     mead_last['color'] = np.where(mead_last['diff'] < 0, 'red', 'green')
-    mead_rec_low_date = mead_data['Value'].idxmin().strftime('%Y-%m-%d')
+    mead_rec_low_date = mead_data['Water Level'].idxmin().strftime('%Y-%m-%d')
    
     combo_data = pd.read_json(combo_data)
     
-    combo_current_volume = combo_data['Value'][-1]
+    combo_current_volume = combo_data['Water Level'][-1]
     combo_current_volume_date = combo_data.index[-1]
     combo_pct = combo_current_volume / capacities['Powell Mead Combo']
-    combo_last_v = combo_data['Value'][-2]
-    combo_tfh_change = combo_current_volume - combo_data['Value'][-2]
-    combo_cy = combo_current_volume - combo_data['Value'][-days]
-    combo_yr = combo_current_volume - combo_data['Value'][-366]
+    combo_last_v = combo_data['Water Level'][-2]
+    combo_tfh_change = combo_current_volume - combo_data['Water Level'][-2]
+    combo_cy = combo_current_volume - combo_data['Water Level'][-days]
+    combo_yr = combo_current_volume - combo_data['Water Level'][-366]
    
     combo_last = combo_data.groupby(combo_data.index.strftime('%Y')).tail(1)
-    combo_last['diff'] = combo_last['Value'].diff()
+    combo_last['diff'] = combo_last['Water Level'].diff()
     combo_last['color'] = np.where(combo_last['diff'] < 0, 'red', 'green')
     combo_annual_min = combo_data.resample('Y').min()
     pd.set_option('display.max_columns', None)
     # print(combo_last)
     combo_min_twok = combo_annual_min[(combo_annual_min.index.year > 1999)]
-    combo_rec_low = combo_min_twok['Value'].min()
-    combo_dif_rl = combo_data['Value'].iloc[-1] - combo_rec_low
-    combo_rec_low_date = combo_data['Value'].idxmin().strftime('%Y-%m-%d')
+    combo_rec_low = combo_min_twok['Water Level'].min()
+    combo_dif_rl = combo_data['Water Level'].iloc[-1] - combo_rec_low
+    combo_rec_low_date = combo_data['Water Level'].idxmin().strftime('%Y-%m-%d')
 
 
     return html.Div([
