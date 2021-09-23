@@ -57,13 +57,18 @@ def data(n):
     Input('combo-water-data', 'data')])
 def drought_graph(data, combo_data):
     df = pd.read_json(data)
+    df = df.sort_index(ascending=True)
+    df['MA'] = df['DSCI'].rolling(window=10).mean()
+    print(df)
+
+
     drought_traces = []
 
     df_combo = pd.read_json(combo_data)
-    print(df_combo)
+    
 
     drought_traces.append(go.Scatter(
-        y = df['DSCI'],
+        y = df['MA'],
         x = df.index,
         marker_color = 'red',
         yaxis='y'
@@ -100,7 +105,7 @@ def clean_powell_data(n):
     mead_data = 'https://data.usbr.gov/rise/api/result/download?type=csv&itemId=6124&before=' + today + '&after=1999-12-30&filename=Lake%20Mead%20Hoover%20Dam%20and%20Powerplant%20Daily%20Lake%2FReservoir%20Storage-af%20Time%20Series%20Data%20(1937-05-28%20-%202020-11-30)&order=ASC'
 
 
-    # https://data.usbr.gov/rise/api/result/download?type=csv&itemId=509&before=2021-09-19&after=1999-12-29&filename=Lake%20Powell%20Glen%20Canyon%20Dam%20and%20Powerplant%20Daily%20Lake%2FReservoir%20Storage-af%20Time%20Series%20Data%20
+    # https://data.usbr.gov/rise/api/result/download?type=csv&itemId=509&before=2021-09-22&after=1999-12-29&filename=Lake%20Powell%20Glen%20Canyon%20Dam%20and%20Powerplant%20Daily%20Lake%2FReservoir%20Storage-af%20Time%20Series%20Data%20
 
 
     with requests.Session() as s:
@@ -141,6 +146,7 @@ def clean_powell_data(n):
         df_mead_water['1075'] = 9601000
         df_mead_water['1050'] = 7683000
         df_mead_water['1025'] = 5981000
+        df_mead_water['895'] = 2547000
 
         df_mead_water = df_mead_water.set_index("Date")
         df_mead_water = df_mead_water.sort_index()
@@ -594,7 +600,7 @@ def get_current_volumes_upper(bm_data, nav_data, fg_data):
                 className='one column'
             ),
             html.Div([
-                html.H6('{0:.0%}'.format(bm_pct), style={'text-align': 'center'})
+                html.H6('{0:.1%}'.format(bm_pct), style={'text-align': 'center'})
             ],
                 className='one column'
             ),
@@ -643,7 +649,7 @@ def get_current_volumes_upper(bm_data, nav_data, fg_data):
                 className='one column'
             ),
             html.Div([
-                html.H6('{0:.0%}'.format(nav_pct), style={'text-align': 'center'})
+                html.H6('{0:.1%}'.format(nav_pct), style={'text-align': 'center'})
             ],
                 className='one column'
             ),
@@ -692,7 +698,7 @@ def get_current_volumes_upper(bm_data, nav_data, fg_data):
                 className='one column'
             ),
             html.Div([
-                html.H6('{0:.0%}'.format(fg_pct), style={'text-align': 'center'})
+                html.H6('{0:.1%}'.format(fg_pct), style={'text-align': 'center'})
             ],
                 className='one column'
             ),
