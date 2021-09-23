@@ -126,6 +126,7 @@ def clean_powell_data(n):
         df_powell_water = df_powell_water[1:]
         
         df_powell_water['power level'] = 6124000
+        df_powell_water['dead pool'] = 1895000
 
         df_powell_water = df_powell_water.set_index("Date")
         df_powell_water = df_powell_water.sort_index()
@@ -146,7 +147,7 @@ def clean_powell_data(n):
         df_mead_water['1075'] = 9601000
         df_mead_water['1050'] = 7683000
         df_mead_water['1025'] = 5981000
-        df_mead_water['895'] = 2547000
+        df_mead_water['Dead Pool'] = 2547000
 
         df_mead_water = df_mead_water.set_index("Date")
         df_mead_water = df_mead_water.sort_index()
@@ -213,6 +214,12 @@ def lake_graphs(powell_data, mead_data, combo_data):
         name = 'Power level'
     )),
 
+    powell_traces.append(go.Scatter(
+        y = powell_df['dead pool'],
+        x = powell_df.index,
+        name = 'Dead Pool'
+    )),
+
     combo_traces.append(go.Scatter(
         y = combo_df['Value'],
         x = combo_df.index,
@@ -228,7 +235,7 @@ def lake_graphs(powell_data, mead_data, combo_data):
     )
 
     mead_layout = go.Layout(
-        height =400,
+        height = 400,
         title = 'Lake Mead',
         yaxis = {'title':'Volume (AF)'},
         paper_bgcolor="#1f2630",
