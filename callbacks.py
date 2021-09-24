@@ -74,7 +74,7 @@ def drought_graph(data, combo_data):
         yaxis='y'
     )),
     drought_traces.append(go.Bar(
-        y = df_combo['Value'],
+        y = df_combo['Water Level'],
         x = df_combo.index,
         yaxis ='y2',
         marker_color = 'lightblue'
